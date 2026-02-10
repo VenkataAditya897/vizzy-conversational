@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+
+# Virtual env
+venv/
+.env/
+.venv/
+
+# Node (not used but safe)
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Env files
+backend/.env
+.env
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Storage (generated images/videos)
+backend/storage/generated/
+backend/storage/tmp/
+
+# Build
+dist/
+build/

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vizzy AI</title>
+  <link rel="stylesheet" href="/frontend/styles.css" />
+
+</head>
+<body>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">V</div>
+        <div>
+          <div class="title">Vizzy</div>
+          <div class="sub">AI Studio</div>
+        </div>
+      </div>
+
+      <button class="new-chat" id="newChatBtn">+ New Chat</button>
+
+      <div class="sidebar-section">
+        <div class="section-title">Conversations</div>
+        <div class="convo-list" id="convoList"></div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn ghost" id="logoutBtn">Logout</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- TOP BAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="chat-title" id="chatTitle">New Chat</div>
+          <div class="chat-meta" id="chatMeta">Ready</div>
+        </div>
+
+        <div class="topbar-right">
+          <label class="switch">
+            <input type="checkbox" id="prefsToggle" checked />
+            <span class="slider"></span>
+          </label>
+          <span class="prefs-label">Use Preferences</span>
+          <button class="btn ghost" id="resetPrefsBtn">Reset</button>
+        </div>
+      </div>
+
+      <!-- CHAT AREA -->
+      <div class="chat" id="chat"></div>
+
+      <!-- INPUT BAR -->
+      <!-- INPUT BAR -->
+<div class="composer">
+
+  <!-- IMAGE PREVIEW (must be ABOVE textarea) -->
+  <div id="imagePreviewRow" class="image-preview-row" style="display:none;">
+    <img id="imagePreview" />
+    <button class="btn ghost" id="removeImageBtn">Remove</button>
+  </div>
+
+  <!-- MAIN INPUT ROW -->
+  <div class="composer-row">
+    <textarea id="textInput" placeholder="Type your prompt..."></textarea>
+
+    <input type="file" id="imageFileInput" accept="image/*" style="display:none;" />
+
+    <button class="btn icon" id="uploadBtn" title="Upload image">📎</button>
+    <button class="btn icon" id="micBtn" title="Voice input">🎙️</button>
+    <button class="btn primary" id="sendBtn">Send</button>
+  </div>
+
+  <div class="hint" id="hint">
+    Tip: Upload an image 📎 to transform it.
+  </div>
+
+</div>
+
+
+    </main>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <!-- LOGIN MODAL -->
+<div class="modal-backdrop" id="authModal">
+  <div class="modal">
+    <h2 id="authTitle">Login</h2>
+    <p class="muted" id="authSub">Login to continue.</p>
+
+    <div id="authError" class="auth-error" style="display:none;"></div>
+
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+
+    <!-- Confirm password (only for signup) -->
+    <input id="confirmPassword" type="password" placeholder="Confirm Password" style="display:none;" />
+
+    <button class="btn primary full" id="authPrimaryBtn">Login</button>
+
+    <button class="btn full" id="authSecondaryBtn">Signup</button>
+
+    <div class="divider"></div>
+
+    <p class="muted small" id="authHint">
+      Use signup if you don’t have an account.
+    </p>
+  </div>
+</div>
+
+
+  <script src="/frontend/app.js"></script>
+
+</body>
+</html>

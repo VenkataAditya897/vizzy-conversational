@@ -12,17 +12,17 @@ JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "10080"))
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-INTENT_PROVIDER = os.getenv("INTENT_PROVIDER", "groq")
-INTENT_MODEL = os.getenv("INTENT_MODEL", "llama-3.3-70b-versatile")
+PLANNER_PROVIDER = os.getenv("PLANNER_PROVIDER", "groq")
+PLANNER_MODEL = os.getenv("PLANNER_MODEL", "llama-3.3-70b-versatile")
+
+VISION_PLANNER_PROVIDER = os.getenv("VISION_PLANNER_PROVIDER", "openai")
+VISION_PLANNER_MODEL = os.getenv("VISION_PLANNER_MODEL", "gpt-4o-mini")
 
 IMAGE_PROVIDER = os.getenv("IMAGE_PROVIDER", "openai")
 IMAGE_MODEL = os.getenv("IMAGE_MODEL", "gpt-image-1")
 
-VIDEO_PROVIDER = os.getenv("VIDEO_PROVIDER", "openai")
-VIDEO_MODEL = os.getenv("VIDEO_MODEL", "sora-2")
-CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
-CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
 
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
 

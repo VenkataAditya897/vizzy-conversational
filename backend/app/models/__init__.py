@@ -3,3 +3,4 @@ from .conversation import Conversation
 from .message import Message
 from .asset import Asset
 from .user_memory import UserMemory
+from .conversation_state import ConversationState

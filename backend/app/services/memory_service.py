@@ -62,3 +62,16 @@ def get_last_memory(db: Session, user_id: int, limit: int = 25):
         .limit(limit)
         .all()
     )
+def format_memory_for_prompt(rows: list[UserMemory]) -> str:
+   
+    if not rows:
+        return ""
+
+    lines = []
+    for r in rows:
+        if r.memory_type == "text" and r.text:
+            lines.append(f"- {r.text.strip()}")
+        elif r.memory_type == "image" and r.image_url:
+            lines.append(f"- [image preference] {r.image_url}")
+
+    return "\n".join(lines)

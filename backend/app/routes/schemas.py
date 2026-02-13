@@ -68,19 +68,9 @@ class ChatSendRequest(BaseModel):
     use_preferences: bool = True
 
 
-class IntentResponse(BaseModel):
-    output_type: str
-    mode: str
-    task: str
-    num_outputs: int
-    aspect_ratio: str
-    video_seconds: Optional[int] = None
-    error_message: Optional[str] = None
-
 
 
 class ChatSendResponse(BaseModel):
     conversation_id: int
-    intent: IntentResponse
     user_message: MessageWithAssetsResponse
     assistant_message: MessageWithAssetsResponse

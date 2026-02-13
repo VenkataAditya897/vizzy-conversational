@@ -74,9 +74,7 @@ function hideAuth() {
   authModal.classList.remove("show");
 }
 
-function isVideoUrl(url) {
-  return url.toLowerCase().endsWith(".mp4");
-}
+
 
 function showAuthError(msg) {
   authError.textContent = msg;
@@ -306,34 +304,26 @@ function renderMessage(msg) {
       const card = document.createElement("div");
       card.className = "asset-card";
 
-      if (a.type === "video" || isVideoUrl(a.url)) {
-        card.innerHTML = `
-          <video controls src="${a.url}"></video>
-          <div class="asset-actions">
-            <a class="btn" href="${a.url}" download>Download</a>
-            <button class="btn" data-regenerate="1">Regenerate</button>
-          </div>
-        `;
-      } else {
-        card.innerHTML = `
-          <img src="${a.url}" />
-          <div class="asset-actions">
-            <a class="btn" href="${a.url}" download>Download</a>
-            <button class="btn" data-regenerate="1">Regenerate</button>
-          </div>
-        `;
+      if (a.type === "image") {
+        const img = document.createElement("img");
+        img.src = a.url;
+        img.alt = "Generated image";
+
+        img.style.cursor = "pointer";
+        img.title = "Click to edit this image";
+
+        img.onclick = () => {
+          setImageUrl(a.url);
+          setStatus("Selected image for editing ✅");
+        };
+
+        card.appendChild(img);
       }
 
-      // Regenerate button
-      const regenBtn = card.querySelector("[data-regenerate]");
-      regenBtn.onclick = async () => {
-        if (!lastPromptSent) return alert("No last prompt found to regenerate.");
-        textInput.value = lastPromptSent;
-        await sendMessage();
-      };
 
       grid.appendChild(card);
     }
+
 
     bubble.appendChild(grid);
   }
@@ -426,7 +416,8 @@ async function sendMessage() {
     // show assistant
 
     await refreshSidebar();
-    setStatus(`Done • intent: ${resp.intent.output_type}/${resp.intent.mode}`);
+    setStatus("Done");
+
 
     textInput.value = "";
     // keep image url so user can reuse it if needed

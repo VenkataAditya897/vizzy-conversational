@@ -1,79 +1,76 @@
-# Vizzy Chat 🎬✨
+# Vizzy Conversational 🎨💬
 
-A creative chat application that automatically decides whether the user wants an **image** or a **video**, then generates it using AI.
-
-This project is built like a real product:
-
-- **FastAPI backend**
-- **SQLite DB**
-- **JWT Auth**
-- **Memory (last 25 prompts FIFO)**
-- **Intent classifier (1 API call only)**
-- **Image generation + Image transform**
-- **Video generation + Video from image**
-- **Clean minimal frontend UI (HTML/CSS/JS)**
+A **conversational AI image studio** where the assistant **asks smart questions**, waits for natural confirmation, then generates **4 high‑quality images** — with full chat history, assets, and memory saved.
 
 ---
 
-## ✅ Features
+## ✨ Features
 
-### 🔐 Authentication
+### 💬 Conversational Planner (LLM)
 
-- Signup + Login
-- JWT-based authentication
-- Token stored in localStorage
+The assistant returns **strict JSON**:
 
-### 💬 Conversations
+- `type = "question"` → asks **only 1 question at a time**
+- `type = "final"` → returns the final prompt
 
-- Create new chats
-- View old chats
-- Messages stored in DB
+No hardcoded confirmation keywords.  
+The LLM understands confirmation naturally.
 
-### 🧠 Preferences Memory (FIFO)
+---
 
-- Stores the last **25 prompts**
-- FIFO queue: newest kept, oldest removed
-- Can be turned ON/OFF in UI
-- Reset button clears memory
+### 🧠 Conversation State (DB)
 
-### 🧠 Intent Classifier (Only 1 API call)
+A `conversation_state` table tracks:
 
-The backend uses an LLM intent classifier that returns strict JSON like:
+- whether we are still collecting info
+- the current `draft_prompt`
+- pending questions
 
-```json
-{
-  "output_type": "image",
-  "mode": "transform",
-  "task": "poster",
-  "num_outputs": 4,
-  "aspect_ratio": "1:1",
-  "video_seconds": null
-}
-```
+This makes the “confirm → generate” flow reliable.
 
-Rules:
-
-- **No fallback**
-- If classifier returns invalid JSON → request fails
-- If prompt is invalid (“hi”, “ok”) → returns `output_type="invalid"` and raises 400
+---
 
 ### 🖼️ Image Generation
 
-- Text → Image
-- Image + Text → Transform
+Supports:
 
-Provider:
+- Text → Image generation
+- Image + Text → Transform (edit)
 
-- OpenAI (`gpt-image-1`)
+Providers:
 
-### 🎥 Video Generation
+- **OpenAI** (`gpt-image-1`)
+- **Mockup provider** (random local images for UI testing)
 
-- Text → Video
-- Image + Text → Video
+---
 
-Provider:
+### 👁️ Vision Planner (Auto)
 
-- OpenAI Sora (`sora-2`)
+When the user uploads/selects an image:
+
+- planner automatically switches from Groq → **OpenAI Vision**
+- the model can understand the image
+- then returns the same strict JSON
+
+---
+
+### 🖱️ Click-to-Edit Images
+
+Users can click any generated image in chat:
+
+- it becomes the selected input image
+- next prompt will edit/transform that image
+
+---
+
+### 🧠 Preferences Memory (FIFO last 25)
+
+Optional memory system:
+
+- stores last 25 final prompts
+- FIFO queue
+- can be turned ON/OFF in UI
+- reset button clears memory
 
 ---
 
@@ -92,6 +89,8 @@ AIP/
     storage/
       generated/
       tmp/
+    mockups/
+      images/
     requirements.txt
     .env
   frontend/
@@ -109,16 +108,9 @@ AIP/
 
 ---
 
-## 🚀 Setup (Local Run)
+## 🚀 Local Setup
 
-### 1) Clone the repo
-
-```bash
-git clone https://github.com/VenkataAditya897/vizzy-chat.git
-cd vizzy-chat
-```
-
-### 2) Create virtual environment
+### 1) Create virtual environment
 
 ```bash
 cd backend
@@ -126,15 +118,15 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-### 3) Install dependencies
+### 2) Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4) Setup `.env`
+### 3) Create `.env`
 
-Create a file:
+Create:
 
 `backend/.env`
 
@@ -142,38 +134,34 @@ Example:
 
 ```env
 DATABASE_URL=sqlite:///./vizzy.db
+
 JWT_SECRET=secret
 JWT_ALGORITHM=HS256
 JWT_EXPIRE_MINUTES=10080
 
+BASE_URL=http://127.0.0.1:8000
+
 OPENAI_API_KEY=your_openai_key_here
 GROQ_API_KEY=your_groq_key_here
 
-BASE_URL=http://127.0.0.1:8000
+# Text-only planner (fast)
+PLANNER_PROVIDER=groq
+PLANNER_MODEL=llama-3.3-70b-versatile
 
-# INTENT CLASSIFIER
-INTENT_PROVIDER=groq
-INTENT_MODEL=llama-3.3-70b-versatile
+# Image planner (vision)
+VISION_PLANNER_PROVIDER=openai
+VISION_PLANNER_MODEL=gpt-4o-mini
 
-# IMAGE GENERATION
+# Image generation provider
 IMAGE_PROVIDER=openai
 IMAGE_MODEL=gpt-image-1
-
-# VIDEO GENERATION
-VIDEO_PROVIDER=openai
-VIDEO_MODEL=sora-2
 ```
-
-⚠️ Important:
-
-- `GROQ_API_KEY` is required if `INTENT_PROVIDER=groq`
-- `OPENAI_API_KEY` is required for image/video generation
 
 ---
 
 ## ▶️ Run Backend
 
-From inside the `backend/` folder:
+From inside `backend/`:
 
 ```bash
 uvicorn app.main:app --reload
@@ -189,36 +177,39 @@ Frontend is served automatically at:
 
 ---
 
-## 🖥️ Using the App
+## 🧪 Mockup Mode (for UI testing)
 
-1. Open: `http://127.0.0.1:8000/`
-2. Signup / Login
-3. Create chat
-4. Type prompt OR upload image
-5. Click **Send**
-6. App automatically decides image/video
+Put some images in:
 
----
+```
+backend/mockups/images/
+```
 
-## 🧠 Memory Logic (FIFO last 25)
+Then set:
 
-- Memory is stored in `user_memory` table
-- When `use_preferences=true`, the user’s prompt is saved
-- After insert, the DB is trimmed to keep only latest 25
+```env
+IMAGE_PROVIDER=mockup
+```
 
----
-
-## 🌍 Deployment
-
-This project is deployed on Render:
-
-- Live URL: https://vizzy-chat.onrender.com/
+Restart backend and you will get random local mockups.
 
 ---
 
-## 📌 GitHub Repo
+## ✅ How the System Works
 
-- Repo: https://github.com/VenkataAditya897/vizzy-chat
+### User clicks Send
+
+1. Save user message in DB
+2. Choose planner:
+   - Text only → Groq planner
+   - Image present → OpenAI Vision planner
+3. Planner returns:
+   - 1 question (max)
+   - OR a final prompt
+4. If final prompt:
+   - generate 4 images
+   - save assets in DB
+   - render in UI
 
 ---
 
